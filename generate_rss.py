@@ -5,7 +5,7 @@ from xml.etree.ElementTree import Element, SubElement, ElementTree
 
 # Charger les flux RSS depuis le fichier CSV
 rss_urls = []
-with open("client_rss_feeds 1.csv", newline='', encoding='utf-8') as csvfile:
+with open("client_rss_feeds_cleaned.csv", newline='', encoding='utf-8') as csvfile:
     reader = csv.DictReader(csvfile)
     for row in reader:
         url = row.get("RSS Feed URL")
