@@ -20,8 +20,12 @@ jobs:
 
       - name: Installer les dépendances
         run: |
-          pip install pandas feedparser feedgen
+          pip install pandas feedparser feedgen fpdf
 
-      - name: Exécuter le script Python
+      - name: Générer le flux RSS combiné
         run: |
           python generate_script.py
+
+      - name: Générer le PDF à partir du XML
+        run: |
+          python generate_pdf_from_xml.py
