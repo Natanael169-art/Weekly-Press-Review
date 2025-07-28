@@ -24,7 +24,7 @@ jobs:
       run: python combine_rss_feeds.py
 
     - name: Upload flux.xml
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: flux-combine
         path: flux.xml
