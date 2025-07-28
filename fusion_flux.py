@@ -7,7 +7,8 @@ import html
 import urllib.parse
 
 # Charger le fichier CSV
-df = pd.read_csv("client_rss_feeds.csv")
+df = pd.read_csv("client_rss_feeds_cleaned.csv")
+
 
 # Nettoyer et corriger les URLs
 df = df[['Company', 'RSS Feed URL']].dropna()
