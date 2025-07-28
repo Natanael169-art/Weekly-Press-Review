@@ -1,0 +1,30 @@
+name: Combine RSS Feeds
+
+on:
+  schedule:
+    - cron: '0 9 * * 1'  # Tous les lundis à 9h
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3
+
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.x'
+
+    - name: Install dependencies
+      run: pip install -r requirements.txt
+    - name: Run RSS combiner
+      run: python combine_rss_feeds.py
+
+    - name: Upload flux.xml
+      uses: actions/upload-artifact@v3
+      with:
+        name: flux-combine
+        path: flux.xml
