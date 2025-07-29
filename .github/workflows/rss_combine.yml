@@ -1,4 +1,4 @@
-name: Combine RSS Feeds
+name: Weekly Press Review
 
 on:
   schedule:
@@ -11,7 +11,7 @@ jobs:
 
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
 
     - name: Set up Python
       uses: actions/setup-python@v4
@@ -20,11 +20,15 @@ jobs:
 
     - name: Install dependencies
       run: pip install -r requirements.txt
-    - name: Run RSS combiner
+
+    - name: Generate combined RSS feed
       run: python combine_rss_feeds.py
 
-    - name: Upload flux.xml
+    - name: Generate PDF from RSS
+      run: python generate_pdf_from_rss.py
+
+    - name: Upload PDF
       uses: actions/upload-artifact@v4
       with:
-        name: flux-combine
-        path: flux.xml
+        name: weekly-press-review
+        path: weekly_press_review.pdf
