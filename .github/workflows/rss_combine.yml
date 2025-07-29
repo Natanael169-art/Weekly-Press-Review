@@ -26,22 +26,7 @@ jobs:
       - name: Generate PDF from RSS
         run: python scripts/rss_to_pdf.py
 
-      - name: Send email with SendGrid SMTP
-        uses: dawidd6/action-send-mail@v3
-        with:
-          server_address: smtp.sendgrid.net
-          server_port: 587
-          secure: starttls
-          username: apikey
-          password: ${{ secrets.SENDGRID_API_KEY }}
-          subject: "Weekly Press Review"
-          to: natanael.farret@hotmail.com
-          from: natanael.farret@hotmail.com  # ⚠️ Doit correspondre exactement à l'adresse validée dans SendGrid
-          body: |
-            Hi Natanael,
-
-            Please find attached your weekly press review.
-
-            Best regards,  
-            GitHub Actions
-          attachments: Weekly_Press_Review.pdf
+      - name: Send email with SendGrid API
+        run: python scripts/send_email_api.py
+        env:
+          SENDGRID_API_KEY: ${{ secrets.SENDGRID_API_KEY }}
