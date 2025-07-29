@@ -2,3 +2,4 @@ pandas
 feedparser
 feedgen
 PyMuPDF
+weasyprint
