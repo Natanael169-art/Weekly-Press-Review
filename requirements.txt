@@ -3,3 +3,4 @@ feedparser
 feedgen
 PyMuPDF
 weasyprint
+requests
