@@ -27,12 +27,6 @@ jobs:
     - name: Generate PDF from RSS
       run: python generate_pdf_from_rss.py
 
-    - name: Upload PDF
-      uses: actions/upload-artifact@v4
-      with:
-        name: weekly-press-review
-        path: weekly_press_review.pdf    
-      
     - name: Send PDF by email
       uses: dawidd6/action-send-mail@v3
       with:
@@ -41,14 +35,13 @@ jobs:
         username: ${{ secrets.EMAIL_USERNAME }}
         password: ${{ secrets.EMAIL_PASSWORD }}
         subject: Weekly Press Review
-        to: natanael@exemple.com
+        to: natanael@example.com
         from: GitHub Actions <natanael.farret@hertz.com>
         body: |
-          Hello Natanael,
+          Bonjour Natanael,
 
-          Please find attached the latest Weekly Press Review.
+          Veuillez trouver en pièce jointe la revue de presse hebdomadaire.
 
-          Best regards,
+          Bien cordialement,
           GitHub Actions
         attachments: weekly_press_review.pdf
-
