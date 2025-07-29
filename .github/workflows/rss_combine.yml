@@ -32,7 +32,7 @@ jobs:
       with:
         server_address: smtp.office365.com
         server_port: 587
-        secure: true
+        secure: starttls
         username: ${{ secrets.EMAIL_USERNAME }}
         password: ${{ secrets.EMAIL_PASSWORD }}
         subject: Weekly Press Review
