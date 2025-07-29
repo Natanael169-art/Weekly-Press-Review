@@ -36,7 +36,7 @@ jobs:
           password: ${{ secrets.SENDGRID_API_KEY }}
           subject: "Weekly Press Review"
           to: natanael.farret@hotmail.com
-          from: natanael.farret@hotmail.com
+          from: natanael.farret@hotmail.com  # ⚠️ Doit correspondre exactement à l'adresse validée dans SendGrid
           body: |
             Hi Natanael,
 
