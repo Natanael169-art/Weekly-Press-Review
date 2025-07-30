@@ -22,9 +22,10 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
+          pip install feedparser PyMuPDF
 
-      - name: Generate PDF from RSS
-        run: python scripts/rss_to_pdf.py
+      - name: Generate PDF from RSS feeds
+        run: python scripts/generate_press_review.py
 
       - name: Send email with SendGrid API
         run: python scripts/send_email_api.py
