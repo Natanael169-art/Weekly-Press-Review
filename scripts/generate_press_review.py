@@ -51,7 +51,7 @@ for company, urls in rss_data.items():
     page.insert_text((72, 72), text, fontsize=11)
 
 # Save PDF and log file
-pdf_doc.save("weekly_press_review.pdf")
+pdf_doc.save("Weekly_Press_Review.pdf")
 with open("rss_debug_log.txt", "w", encoding="utf-8") as log_file:
     log_file.write("\n".join(log_lines))
 
