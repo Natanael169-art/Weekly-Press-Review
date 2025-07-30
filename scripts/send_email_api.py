@@ -20,7 +20,7 @@ encoded_pdf = base64.b64encode(pdf_data).decode()
 email_data = {
     "personalizations": [
         {
-            "to": [{"email": "natanael.farret@hotmail.com"}],
+            "to": [{"email": "natanael.farret@hertz.com"}],
             "subject": "Weekly Press Review"
         }
     ],
