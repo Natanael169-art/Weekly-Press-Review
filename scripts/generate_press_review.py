@@ -2,6 +2,7 @@ import csv
 import feedparser
 import fitz  # PyMuPDF
 from datetime import datetime
+import textwrap
 
 # Fichiers d'entrée et de sortie
 csv_file = "client_rss_feeds_cleaned.csv"
@@ -49,7 +50,8 @@ with open(csv_file, newline='', encoding='utf-8') as f:
                 link = entry.get("link", "")
                 summary = entry.get("summary", "")
                 published = entry.get("published", "") or entry.get("updated", "")
-                text += f"• {title}\n  {published}\n  {link}\n  {summary}\n\n"
+                wrapped_link = "\n     ".join(textwrap.wrap(link, width=100))
+                text += f"• {title}\n  {published}\n  {wrapped_link}\n  {summary}\n\n"
 
         # Ajout du texte à la page
         page.insert_text((72, 72), text, fontsize=11)
@@ -64,4 +66,4 @@ with open(log_output, "w", encoding="utf-8") as log_file:
     log_file.write("\n".join(log_lines))
 
 print(f"✅ PDF généré : {pdf_output}")
-print(f"🪵 Log généré : {log_output}")
+print(f"🧾 Log généré : {log_output}")
