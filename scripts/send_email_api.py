@@ -16,11 +16,14 @@ with open(pdf_filename, "rb") as f:
 # Encodage en base64
 encoded_pdf = base64.b64encode(pdf_data).decode()
 
-# Corps de l'email
+# Corps de l'email avec deux destinataires
 email_data = {
     "personalizations": [
         {
-            "to": [{"email": "natanael.farret@hertz.com"}],
+            "to": [
+                {"email": "natanael.farret@hertz.com"},
+                {"email": "estrange@hertz.com"}
+            ],
             "subject": "Weekly Press Review"
         }
     ],
@@ -28,7 +31,7 @@ email_data = {
     "content": [
         {
             "type": "text/plain",
-            "value": "Hi Natanael,\n\nPlease find attached your weekly press review.\n\nBest regards,\nGitHub Actions"
+            "value": "Hi,\n\nPlease find attached your weekly press review.\n\nBest regards,\nGitHub Actions"
         }
     ],
     "attachments": [
@@ -56,3 +59,4 @@ if response.status_code == 202:
 else:
     print(f"Failed to send email. Status code: {response.status_code}")
     print(response.text)
+
