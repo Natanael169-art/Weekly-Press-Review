@@ -18,6 +18,10 @@ log_lines = []
 now = datetime.utcnow()
 seven_days_ago = now - timedelta(days=7)
 
+# Fonction pour détecter les liens illisibles (ex: Google News)
+def is_unreadable_link(url):
+    return "news.google.com/rss/articles/" in url or len(url) > 150
+
 # Lecture du fichier CSV
 with open(csv_file, newline='', encoding='utf-8') as f:
     reader = csv.DictReader(f)
@@ -64,12 +68,16 @@ with open(csv_file, newline='', encoding='utf-8') as f:
                 published = entry.get("published", "") or entry.get("updated", "")
                 link = entry.get("link", "")
 
-                # Nettoyer la mention "Read more" du résumé
-                summary = re.sub(r'Read more[:\s]*', '', summary, flags=re.IGNORECASE)
+                # Nettoyage du résumé : suppression de "Read more" et balises HTML
+                summary_clean = re.sub(r'<[^>]+>', '', summary)
+                summary_clean = re.sub(r'Read more\s*$', '', summary_clean, flags=re.IGNORECASE)
 
-                # Lien replié proprement
-                wrapped_link = "\n".join(textwrap.wrap(link, width=80, break_long_words=True))
-                text += f"• {title}\n  {published}\n  {summary}\n  {wrapped_link}\n\n"
+                # Lien replié proprement s'il est lisible
+                if link and not is_unreadable_link(link):
+                    wrapped_link = "\n".join(textwrap.wrap(link, width=80, break_long_words=True))
+                    text += f"• {title}\n  {published}\n  {summary_clean}\n  {wrapped_link}\n\n"
+                else:
+                    text += f"• {title}\n  {published}\n  {summary_clean}\n\n"
 
         page.insert_text((72, 72), text, fontsize=11)
 
@@ -84,4 +92,3 @@ with open(log_output, "w", encoding="utf-8") as log_file:
 
 print(f"✅ PDF généré : {pdf_output}")
 print(f"🧾 Log généré : {log_output}")
-
