@@ -3,7 +3,6 @@ import feedparser
 import fitz  # PyMuPDF
 from datetime import datetime, timedelta
 import textwrap
-import re
 
 # Fichiers d'entrée et de sortie
 csv_file = "client_rss_feeds_cleaned.csv"
@@ -18,9 +17,11 @@ log_lines = []
 now = datetime.utcnow()
 seven_days_ago = now - timedelta(days=7)
 
-# Fonction pour détecter les liens illisibles (ex: Google News)
-def is_unreadable_link(url):
-    return "news.google.com/rss/articles/" in url or len(url) > 150
+# Marges
+margin_left = 72  # 1 inch
+margin_right = 72
+page_width = fitz.paper_size("a4")[0]
+usable_width = page_width - margin_left - margin_right
 
 # Lecture du fichier CSV
 with open(csv_file, newline='', encoding='utf-8') as f:
@@ -57,10 +58,10 @@ with open(csv_file, newline='', encoding='utf-8') as f:
 
         # Création d'une page PDF pour cette entreprise
         page = pdf_doc.new_page()
-        text = f"=== {company} ===\n\n"
+        text_lines = [f"=== {company} ===", ""]
 
         if article_count == 0:
-            text += "No recent articles available.\n"
+            text_lines.append("No recent articles available.")
         else:
             for entry in recent_entries[:5]:  # Limite à 5 articles
                 title = entry.get("title", "No title")
@@ -68,18 +69,26 @@ with open(csv_file, newline='', encoding='utf-8') as f:
                 published = entry.get("published", "") or entry.get("updated", "")
                 link = entry.get("link", "")
 
-                # Nettoyage du résumé : suppression de "Read more" et balises HTML
-                summary_clean = re.sub(r'<[^>]+>', '', summary)
-                summary_clean = re.sub(r'Read more\s*$', '', summary_clean, flags=re.IGNORECASE)
+                text_lines.append(f"• {title}")
+                text_lines.append(f"  {published}")
+                wrapped_summary = textwrap.wrap(summary, width=100)
+                text_lines.extend([f"  {line}" for line in wrapped_summary])
 
-                # Lien replié proprement s'il est lisible
-                if link and not is_unreadable_link(link):
-                    wrapped_link = "\n".join(textwrap.wrap(link, width=80, break_long_words=True))
-                    text += f"• {title}\n  {published}\n  {summary_clean}\n  {wrapped_link}\n\n"
-                else:
-                    text += f"• {title}\n  {published}\n  {summary_clean}\n\n"
+                # Lien centré et replié proprement
+                wrapped_link = textwrap.wrap(link, width=80, break_long_words=True)
+                for line in wrapped_link:
+                    padding = (usable_width - fitz.get_text_length(line, fontsize=11)) / 2
+                    text_lines.append(" " * int(padding / 5) + line)
+                text_lines.append("")
 
-        page.insert_text((72, 72), text, fontsize=11)
+        # Insérer le texte avec marges
+        text = "\n".join(text_lines)
+        page.insert_textbox(
+            fitz.Rect(margin_left, 72, page_width - margin_right, 800),
+            text,
+            fontsize=11,
+            align=0  # left align
+        )
 
 # Sauvegarde du PDF
 pdf_doc.save(pdf_output)
@@ -92,3 +101,4 @@ with open(log_output, "w", encoding="utf-8") as log_file:
 
 print(f"✅ PDF généré : {pdf_output}")
 print(f"🧾 Log généré : {log_output}")
+
