@@ -4,7 +4,7 @@ import fitz  # PyMuPDF
 from datetime import datetime
 
 # Fichiers d'entrée et de sortie
-csv_file = "client_rss_feeds_cleaned 1.csv"
+csv_file = "client_rss_feeds_cleaned.csv"
 pdf_output = "Weekly_Press_Review.pdf"
 log_output = "rss_debug_log.txt"
 
