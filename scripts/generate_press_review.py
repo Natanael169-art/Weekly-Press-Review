@@ -3,6 +3,7 @@ import feedparser
 import fitz  # PyMuPDF
 from datetime import datetime, timedelta
 import textwrap
+import re
 
 # Fichiers d'entrée et de sortie
 csv_file = "client_rss_feeds_cleaned.csv"
@@ -62,8 +63,12 @@ with open(csv_file, newline='', encoding='utf-8') as f:
                 summary = entry.get("summary", "")
                 published = entry.get("published", "") or entry.get("updated", "")
                 link = entry.get("link", "")
+
+                # Nettoyer la mention "Read more" du résumé
+                summary = re.sub(r'Read more[:\s]*', '', summary, flags=re.IGNORECASE)
+
                 # Lien replié proprement
-                wrapped_link = "\n".join(textwrap.wrap(f"Read more: {link}", width=80, break_long_words=True))
+                wrapped_link = "\n".join(textwrap.wrap(link, width=80, break_long_words=True))
                 text += f"• {title}\n  {published}\n  {summary}\n  {wrapped_link}\n\n"
 
         page.insert_text((72, 72), text, fontsize=11)
@@ -79,3 +84,4 @@ with open(log_output, "w", encoding="utf-8") as log_file:
 
 print(f"✅ PDF généré : {pdf_output}")
 print(f"🧾 Log généré : {log_output}")
+
