@@ -1,58 +1,67 @@
-# Revised script to generate a press review PDF and log file from individual RSS feeds per company
-
 import csv
+import feedparser
 import fitz  # PyMuPDF
 from datetime import datetime
-import xml.etree.ElementTree as ET
 
-# Load RSS feed URLs from CSV
-rss_data = {}
-with open("client_rss_feeds_cleaned.csv", newline='', encoding='utf-8') as f:
-    reader = csv.DictReader(f)
-    for row in reader:
-        company = row.get("Company Name", "Unnamed Company")
-        url = row.get("RSS Feed URL")
-        if url:
-            rss_data.setdefault(company, []).append(url)
+# Fichiers d'entrée et de sortie
+csv_file = "client_rss_feeds_cleaned 1.csv"
+pdf_output = "Weekly_Press_Review.pdf"
+log_output = "rss_debug_log.txt"
 
-# Prepare PDF document and log file
+# Initialisation du document PDF
 pdf_doc = fitz.open()
 log_lines = []
 
-# Process each company's feeds
-for company, urls in rss_data.items():
-    articles = []
-    for url in urls:
-        try:
-            tree = ET.parse(url)
-            root = tree.getroot()
-            items = root.findall(".//item")
-            if not items:
-                log_lines.append(f"[EMPTY] {company} - No articles found in: {url}")
-                continue
-            for item in items:
-                title = item.findtext("title", "No title")
-                link = item.findtext("link", "")
-                summary = item.findtext("description", "")
-                pub_date = item.findtext("pubDate", "")
-                articles.append(f"• {title}\n{pub_date}\n{link}\n{summary}\n")
-        except Exception as e:
-            log_lines.append(f"[ERROR] {company} - Exception: {str(e)}")
+# Lecture du fichier CSV
+with open(csv_file, newline='', encoding='utf-8') as f:
+    reader = csv.DictReader(f)
+    for row in reader:
+        company = row.get("Company", "Unnamed Company")
+        rss_url = row.get("RSS Feed URL", "").strip()
 
-    # Add section to PDF
-    page = pdf_doc.new_page()
-    text = f"=== {company} ===\n\n"
-    if articles:
-        text += "\n\n".join(articles)
-        log_lines.append(f"[OK] {company} - {len(articles)} articles retrieved.")
-    else:
-        text += "No articles available."
-        log_lines.append(f"[EMPTY] {company} - No articles to display.")
-    page.insert_text((72, 72), text, fontsize=11)
+        if not rss_url:
+            log_lines.append(f"[{company}] ❌ Aucun flux RSS fourni.")
+            continue
 
-# Save PDF and log file
-pdf_doc.save("Weekly_Press_Review.pdf")
-with open("rss_debug_log.txt", "w", encoding="utf-8") as log_file:
+        feed = feedparser.parse(rss_url)
+
+        if feed.bozo:
+            log_lines.append(f"[{company}] ❌ Erreur de parsing du flux RSS : {feed.bozo_exception}")
+            continue
+
+        entries = feed.entries
+        article_count = len(entries)
+
+        if article_count == 0:
+            log_lines.append(f"[{company}] ⚠️ Aucun article trouvé.")
+        else:
+            log_lines.append(f"[{company}] ✅ {article_count} article(s) récupéré(s).")
+
+        # Création d'une page PDF pour cette entreprise
+        page = pdf_doc.new_page()
+        text = f"=== {company} ===\n\n"
+
+        if article_count == 0:
+            text += "No articles available.\n"
+        else:
+            for entry in entries[:5]:  # Limite à 5 articles par entreprise
+                title = entry.get("title", "No title")
+                link = entry.get("link", "")
+                summary = entry.get("summary", "")
+                published = entry.get("published", "") or entry.get("updated", "")
+                text += f"• {title}\n  {published}\n  {link}\n  {summary}\n\n"
+
+        # Ajout du texte à la page
+        page.insert_text((72, 72), text, fontsize=11)
+
+# Sauvegarde du PDF
+pdf_doc.save(pdf_output)
+pdf_doc.close()
+
+# Sauvegarde du fichier de log
+with open(log_output, "w", encoding="utf-8") as log_file:
+    log_file.write(f"RSS Debug Log - {datetime.now().isoformat()}\n\n")
     log_file.write("\n".join(log_lines))
 
-print("PDF and log file generated successfully.")
+print(f"✅ PDF généré : {pdf_output}")
+print(f"🪵 Log généré : {log_output}")
