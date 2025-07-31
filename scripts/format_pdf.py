@@ -1,6 +1,6 @@
 import fitz  # PyMuPDF
 
-input_pdf = "weekly_press_review 10.pdf"
+input_pdf = "Weekly_Press_Review.pdf"
 output_pdf = "weekly_press_review_Formatted.pdf"
 
 doc = fitz.open(input_pdf)
