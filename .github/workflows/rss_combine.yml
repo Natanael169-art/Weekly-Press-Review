@@ -18,9 +18,10 @@ jobs:
         with:
           python-version: '3.10'
 
-      - name: Install Python dependencies
+      - name: Install Python dependencies from requirements.txt
         run: |
-          pip install pymupdf
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
 
       - name: Install LaTeX
         run: sudo apt-get install -y texlive-latex-base texlive-latex-extra
