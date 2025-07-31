@@ -29,9 +29,6 @@ jobs:
       - name: Generate press review PDF (raw)
         run: python scripts/generate_press_review.py
 
-      - name: Rename generated PDF
-        run: mv Weekly_Press_Review.pdf "weekly_press_review 11.pdf"
-
       - name: Format PDF with LaTeX
         run: python scripts/format_pdf_latex.py
 
