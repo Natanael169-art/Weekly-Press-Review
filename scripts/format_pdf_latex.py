@@ -23,13 +23,7 @@ tex_file = "press_review.tex"
 doc = fitz.open(input_pdf)
 lines = []
 
-for page in doc:
-    text = page.get_text("text")
-    lines.extend(text.splitlines())
-
-doc.close()
-
-with open(tex_file, "w", encoding="utf- f:
+for(tex_file, "w", encoding="utf-8") as f:
     f.write(r"""\documentclass[11pt]{article}
 \usepackage[utf8]{inputenc}
 \usepackage{hyperref}
@@ -46,8 +40,7 @@ with open(tex_file, "w", encoding="utf- f:
         escaped_line = escape_latex(line)
 
         if line.startswith("===") and line.endswith("==="):
-            company = escape_latex(line.strip("= ").title())
-            f.write(f"\\section*{{{company}}}\n")
+           {{{company}}}\n")
 
         elif line.startswith("·") or line.startswith("•"):
             article_title = escape_latex(line.strip("·• "))
