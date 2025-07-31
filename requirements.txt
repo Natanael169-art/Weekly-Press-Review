@@ -5,3 +5,4 @@ PyMuPDF
 weasyprint
 requests
 beautifulsoup4
+pymupdf
