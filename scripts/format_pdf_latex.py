@@ -29,7 +29,7 @@ for page in doc:
 
 doc.close()
 
-with open(tex_file, "w", encoding="utf-8") as f:
+with open(tex_file, "w", encoding="utf- f:
     f.write(r"""\documentclass[11pt]{article}
 \usepackage[utf8]{inputenc}
 \usepackage{hyperref}
