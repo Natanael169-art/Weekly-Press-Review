@@ -31,7 +31,7 @@ doc.close()
 
 with open(tex_file, "w", encoding="utf-8") as f:
     f.write(r"""\documentclass[11pt]{article}
-\8]{inputenc}
+\usepackage[utf8]{inputenc}
 \usepackage{hyperref}
 \usepackage{geometry}
 \geometry{margin=2.5cm}
@@ -49,8 +49,8 @@ with open(tex_file, "w", encoding="utf-8") as f:
             company = escape_latex(line.strip("= ").title())
             f.write(f"\\section*{{{company}}}\n")
 
-        elif line.startswith("·"):
-            article_title = escape_latex(line.strip("· "))
+        elif line.startswith("·") or line.startswith("•"):
+            article_title = escape_latex(line.strip("·• "))
             f.write(f"\\subsection*{{{article_title}}}\n")
 
         elif "http" in line:
