@@ -20,7 +20,7 @@ jobs:
 
       - name: Install dependencies
         run: |
-          pip install feedparser pymupdf requests
+          pip install feedparser pymupdf requests beautifulsoup4
 
       - name: Generate press review PDF
         run: python scripts/generate_press_review.py
