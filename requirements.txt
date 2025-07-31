@@ -4,3 +4,4 @@ feedgen
 PyMuPDF
 weasyprint
 requests
+beautifulsoup4
