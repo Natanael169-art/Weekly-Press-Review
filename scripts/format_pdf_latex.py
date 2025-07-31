@@ -23,13 +23,18 @@ tex_file = "press_review.tex"
 doc = fitz.open(input_pdf)
 lines = []
 
-for(tex_file, "w", encoding="utf-8") as f:
+for page in doc:
+    text = page.get_text("text")
+    lines.extend(text.splitlines())
+
+doc.close()
+
+with open(tex_file, "w", encoding="utf-8") as f:
     f.write(r"""\documentclass[11pt]{article}
 \usepackage[utf8]{inputenc}
 \usepackage{hyperref}
 \usepackage{geometry}
-\geometry{margin=2.5cm}
-\title{Weekly Press Review}
+\geometry{margin=2. Review}
 \date{}
 \begin{document}
 \maketitle
@@ -40,7 +45,8 @@ for(tex_file, "w", encoding="utf-8") as f:
         escaped_line = escape_latex(line)
 
         if line.startswith("===") and line.endswith("==="):
-           {{{company}}}\n")
+            company = escape_latex(line.strip("= ").title())
+            f.write(f"\\section*{{{company}}}\n")
 
         elif line.startswith("·") or line.startswith("•"):
             article_title = escape_latex(line.strip("·• "))
