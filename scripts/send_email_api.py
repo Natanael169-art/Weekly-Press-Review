@@ -22,7 +22,6 @@ email_data = {
         {
             "to": [
                 {"email": "natanael.farret@hertz.com"},
-                {"email": "estrange@hertz.com"}
             ],
             "subject": "Weekly Press Review"
         }
