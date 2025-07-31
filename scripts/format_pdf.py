@@ -1,7 +1,7 @@
 import fitz  # PyMuPDF
 
 # Load the original PDF
-input_pdf = "weekly_press_review 8.pdf"
+input_pdf = "Weekly_Press_Review.pdf"
 doc = fitz.open(input_pdf)
 
 # Create a new PDF for the improved layout
