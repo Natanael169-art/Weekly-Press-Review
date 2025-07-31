@@ -18,15 +18,24 @@ jobs:
         with:
           python-version: '3.10'
 
-      - name: Install dependencies
+      - name: Install Python dependencies
         run: |
-          pip install feedparser pymupdf requests beautifulsoup4
+          pip install pymupdf
 
-      - name: Generate press review PDF
+      - name: Install LaTeX
+        run: sudo apt-get install -y texlive-latex-base texlive-latex-extra
+
+      - name: Generate press review PDF (raw)
         run: python scripts/generate_press_review.py
 
-      - name: Format PDF aesthetically
-        run: python scripts/format_pdf.py
+      - name: Rename generated PDF
+        run: mv Weekly_Press_Review.pdf "weekly_press_review 11.pdf"
+
+      - name: Format PDF with LaTeX
+        run: python scripts/format_pdf_latex.py
+
+      - name: Compile LaTeX to PDF
+        run: pdflatex press_review.tex
 
       - name: Send PDF via SendGrid
         env:
