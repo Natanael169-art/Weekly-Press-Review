@@ -34,7 +34,8 @@ with open(tex_file, "w", encoding="utf-8") as f:
 \usepackage[utf8]{inputenc}
 \usepackage{hyperref}
 \usepackage{geometry}
-\geometry{margin=2. Review}
+\geometry{margin=2.5cm}
+\title{Weekly Press Review}
 \date{}
 \begin{document}
 \maketitle
