@@ -30,7 +30,7 @@ def escape_latex(text):
         '^': r'\^{}',
     }
     regex = re.compile('|'.join(re.escape(key) for key in replacements.keys()))
-    return: replacements[match.group()], text)
+    return regex.sub(lambda match: replacements[match.group()], text)
 
 # Nettoyage HTML
 def clean_html(text):
@@ -45,8 +45,7 @@ seven_days_ago = now - timedelta(days=7)
 
 # Lecture des flux RSS
 companies = []
-with open(CSV_FILE, newline='', encoding='utf-8') as f:
-    reader = csv.DictReader(f)
+with open(CSV_FILE,    reader = csv.DictReader(f)
     for row in reader:
         company_name = row.get("Company", "Unnamed Company")
         rss_url = row.get("RSS Feed URL", "").strip()
