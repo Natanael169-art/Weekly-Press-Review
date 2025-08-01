@@ -33,7 +33,7 @@ def escape_latex(text):
     return regex.sub(lambda match: replacements[match.group()], text)
 
 # Nettoyage HTML
-def clean_html(text):
+def_html(text):
     if not text:
         return ""
     soup = BeautifulSoup(unescape(text), "html.parser")
@@ -45,7 +45,8 @@ seven_days_ago = now - timedelta(days=7)
 
 # Lecture des flux RSS
 companies = []
-with open(CSV_FILE,    reader = csv.DictReader(f)
+with open(CSV_FILE, newline='', encoding='utf-8') as f:
+    reader = csv.DictReader(f)
     for row in reader:
         company_name = row.get("Company", "Unnamed Company")
         rss_url = row.get("RSS Feed URL", "").strip()
