@@ -39,7 +39,8 @@ def clean_html(text):
     return soup.get_text(separator=" ", strip=True)
 
 # Fenêtre temporelle
-now =seven_days_ago = now - timedelta(days=7)
+now = datetime.utcnow()
+seven_days_ago = now - timedelta(days=7)
 
 # Lecture des flux RSS
 companies = []
@@ -73,10 +74,13 @@ with open(CSV_FILE, newline='', encoding='utf-8') as f:
                     })
 
         if recent_articles:
+            print(f"✅ {company_name}: {len(recent_articles)} article(s) trouvé(s)")
             companies.append({
                 "company": escape_latex(company_name),
                 "articles": recent_articles[:5]
             })
+        else:
+            print(f"⚠️ {company_name}: aucun article trouvé")
 
 # Rendu LaTeX
 env = Environment(loader=FileSystemLoader(TEMPLATE_DIR))
@@ -91,4 +95,4 @@ rendered_tex = template.render(
 with open(OUTPUT_TEX, "w", encoding="utf-8") as f:
     f.write(rendered_tex)
 
-print(f"✅ LaTeX file generated: {OUTPUT_TEX}")
+print(f"\n✅ Fichier LaTeX généré : {OUTPUT_TEX}")
