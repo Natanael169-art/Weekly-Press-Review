@@ -18,7 +18,7 @@ def escape_latex(text):
         return ""
     replacements = {
         '\\': r'\textbackslash{}',
-        '&': r'\&',
+        '&amp;': r'\&amp;',
         '%': r'\%',
         '$': r'\$',
         '#': r'\#',
@@ -35,7 +35,7 @@ def escape_latex(text):
 def clean_html(text):
     if not text:
         return ""
-    soup = BeautifulSoup(unescape(text), "html.parser")
+    soup BeautifulSoup(unescape(text), "html.parser")
     return soup.get_text(separator=" ", strip=True)
 
 # Fenêtre temporelle
@@ -50,11 +50,9 @@ with open(CSV_FILE, newline='', encoding='utf-8') as f:
         company_name = row.get("Company", "Unnamed Company")
         rss_url = row.get("RSS Feed URL", "").strip()
 
-        if not rss_url:
-            continue
+        if            continue
 
         feed = feedparser.parse(rss_url)
-        continue
 
         recent_articles = []
         for entry in feed.entries:
