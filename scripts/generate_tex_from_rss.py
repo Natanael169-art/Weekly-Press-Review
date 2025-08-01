@@ -25,11 +25,7 @@ def escape_latex(text):
         '#': r'\#',
         '_': r'\_',
         '{': r'\{',
-        '}': r'\}',
-        '~': r'\textasciitilde{}',
-        '^': r'\^{}'
-    }
-    regex = re.compile('|'.join(re.escape(key) for key in replacements.keys()))
+        '}(re.escape(key) for key in replacements.keys()))
     return regex.sub(lambda match: replacements[match.group()], text)
 
 # Nettoyage HTML
@@ -40,14 +36,9 @@ def clean_html(text):
     return soup.get_text(separator=" ", strip=True)
 
 # Fenêtre temporelle
-now = datetime.utcnow()
-seven_days_ago = now - timedelta(days=7)
-
-# Lecture des flux RSS
-companies = []
-with open(CSV_FILE, newline='', encoding='utf-8') as f:
-    reader = csv.DictReader(f)
-    row.get("Company", "Unnamed Company")
+now(f)
+    for row in reader:
+        company_name = row.get("Company", "Unnamed Company")
         rss_url = row.get("RSS Feed URL", "").strip()
 
         if not rss_url:
@@ -64,7 +55,7 @@ with open(CSV_FILE, newline='', encoding='utf-8') as f:
                     title = escape_latex(entry.get("title", "No title"))
                     summary = escape_latex(clean_html(entry.get("summary", "")))
                     published = escape_latex(entry.get("published", "") or entry.get("updated", ""))
-                    link = escape_latex(entry.get("link", ""))  # ✅ Échappement ajouté ici
+                    link = escape_latex(entry.get("link", ""))  # ✅ échappement ajouté
 
                     recent_articles.append({
                         "title": title,
