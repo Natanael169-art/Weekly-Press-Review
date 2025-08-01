@@ -26,7 +26,7 @@ def escape_latex(text):
         '{': r'\{',
         '}': r'\}',
         '~': r'\textasciitilde{}',
-        '^': r'\^{}'
+        '^': r'\^{}',
     }
     regex = re.compile('|'.join(re.escape(key) for key in replacements.keys()))
     return regex.sub(lambda match: replacements[match.group()], text)
@@ -50,10 +50,7 @@ with open(CSV_FILE, newline='', encoding='utf-8') as f:
         company_name = row.get("Company", "Unnamed Company")
         rss_url = row.get("RSS Feed URL", "").strip()
 
-        if not rss_url:
-            continue
-
-        feed = feedparser.parse(rss_url)
+       parser.parse(rss_url)
         if feed.bozo:
             continue
 
@@ -63,11 +60,16 @@ with open(CSV_FILE, newline='', encoding='utf-8') as f:
             if pub_date:
                 pub_datetime = datetime(*pub_date[:6])
                 if pub_datetime >= seven_days_ago:
+                    title = escape_latex(entry.get("title", "No title"))
+                    summary = escape_latex(clean_html(entry.get("summary", "")))
+                    published = escape_latex(entry.get("published", "") or entry.get("updated", ""))
+                    link = entry.get("link", "")
+
                     recent_articles.append({
-                        "title": escape_latex(entry.get("title", "No title")),
-                        "summary": escape_latex(clean_html(entry.get("summary", ""))),
-                        "published": escape_latex(entry.get("published", "") or entry.get("updated", "")),
-                        "link": entry.get("link", "")  # Pas d'échappement ici
+                        "title": title,
+                        "summary": summary,
+                        "published": published,
+                        "link": link  # Pas d'échappement ici pour \href{}
                     })
 
         if recent_articles:
