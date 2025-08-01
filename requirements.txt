@@ -6,3 +6,4 @@ weasyprint
 requests
 beautifulsoup4
 pymupdf
+jinja2
