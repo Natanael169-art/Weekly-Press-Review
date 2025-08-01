@@ -47,7 +47,9 @@ with open(CSV_FILE, newline='', encoding='utf-8') as f:
 
         feed = feedparser.parse(rss_url)
         if feed.bozo:
-            continue = []
+            continue
+
+        recent_articles = []
         for entry in feed.entries:
             pub_date = entry.get("published_parsed") or entry.get("updated_parsed")
             if pub_date:
