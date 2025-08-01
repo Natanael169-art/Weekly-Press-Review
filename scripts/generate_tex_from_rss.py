@@ -26,7 +26,7 @@ def escape_latex(text):
         '{': r'\{',
         '}': r'\}',
         '~': r'\textasciitilde{}',
-        '^': r'\^{}',
+       ',
     }
     regex = re.compile('|'.join(re.escape(key) for key in replacements.keys()))
     return regex.sub(lambda match: replacements[match.group()], text)
@@ -40,7 +40,7 @@ def clean_html(text):
 
 # Fenêtre temporelle
 now = datetime.utcnow()
-seven timedelta(days=7)
+seven_days_ago = now - timedelta(days=7)
 
 # Lecture des flux RSS
 companies = []
