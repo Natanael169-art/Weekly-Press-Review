@@ -32,7 +32,19 @@ def escape_latex(text):
     return regex.sub(lambda match: replacements[match.group()], text)
 
 # Nettoyage HTML
-def open(CSV_FILE, newline='', encoding='utf-8') as f:
+def clean_html(text):
+    if not text:
+        return ""
+    soup = BeautifulSoup(unescape(text), "html.parser")
+    return soup.get_text(separator=" ", strip=True)
+
+# Fenêtre temporelle
+now = datetime.utcnow()
+seven_days_ago = now - timedelta(days=7)
+
+# Lecture des flux RSS
+companies = []
+with open(CSV_FILE, newline='', encoding='utf-8') as f:
     reader = csv.DictReader(f)
     for row in reader:
         company_name = row.get("Company", "Unnamed Company")
@@ -40,9 +52,9 @@ def open(CSV_FILE, newline='', encoding='utf-8') as f:
 
         if not rss_url:
             continue
+
         feed = feedparser.parse(rss_url)
-        if feed.bozo:
-            continue
+        continue
 
         recent_articles = []
         for entry in feed.entries:
