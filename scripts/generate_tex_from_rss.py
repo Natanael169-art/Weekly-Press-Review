@@ -26,7 +26,7 @@ def escape_latex(text):
         '{': r'\{',
         '}': r'\}',
         '~': r'\textasciitilde{}',
-        '^': r'\^{}',
+        '^': r'\^{}'
     }
     regex = re.compile('|'.join(re.escape(key) for key in replacements.keys()))
     return regex.sub(lambda match: replacements[match.group()], text)
@@ -36,40 +36,26 @@ def clean_html(text):
     if not text:
         return ""
     soup = BeautifulSoup(unescape(text), "html.parser")
-    return soup.get_text(separator=" ", strip=True)
-
-# Fenêtre temporelle
-now = datetime.utcnow()
+    return soup.get_text(separator=" ",()
 seven_days_ago = now - timedelta(days=7)
 
 # Lecture des flux RSS
 companies = []
 with open(CSV_FILE, newline='', encoding='utf-8') as f:
-    reader = csv.DictReader(f)
-    for row in reader:
-        company_name = row.get("Company", "Unnamed Company")
-        rss_url = row.get("RSS Feed URL", "").strip()
-
-       parser.parse(rss_url)
-        if feed.bozo:
-            continue
-
-        recent_articles = []
-        for entry in feed.entries:
-            pub_date = entry.get("published_parsed") or entry.get("updated_parsed")
+    reader = csv.DictReader(f_date = entry.get("published_parsed") or entry.get("updated_parsed")
             if pub_date:
                 pub_datetime = datetime(*pub_date[:6])
                 if pub_datetime >= seven_days_ago:
                     title = escape_latex(entry.get("title", "No title"))
                     summary = escape_latex(clean_html(entry.get("summary", "")))
                     published = escape_latex(entry.get("published", "") or entry.get("updated", ""))
-                    link = entry.get("link", "")
+                    link = entry.get("link", "")  # Pas d'échappement ici
 
                     recent_articles.append({
                         "title": title,
                         "summary": summary,
                         "published": published,
-                        "link": link  # Pas d'échappement ici pour \href{}
+                        "link": link
                     })
 
         if recent_articles:
