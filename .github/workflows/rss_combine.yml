@@ -21,16 +21,19 @@ jobs:
       - name: Install Python dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install feedparser jinja2
+          pip install feedparser jinja2 beautifulsoup4
 
       - name: Generate LaTeX file from RSS feeds
         run: python scripts/generate_tex_from_rss.py
 
-      - name: Install LaTeX
-        run: sudo apt-get install -y texlive-latex-base texlive-latex-extra
+      - name: Install Tectonic (LaTeX compiler)
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y curl
+          curl https://tectonic.new/install.sh | bash
 
       - name: Compile LaTeX to PDF
-        run: pdflatex press_review.tex
+        run: ~/.cargo/bin/tectonic press_review.tex
 
       - name: Send PDF via SendGrid
         env:
