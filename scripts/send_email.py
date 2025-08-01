@@ -9,7 +9,7 @@ if not SENDGRID_API_KEY:
     raise EnvironmentError("La variable d'environnement SENDGRID_API_KEY n'est pas définie.")
 
 # Chargement du fichier PDF
-pdf_filename = "Weekly_Press_Review.pdf"
+pdf_filename = "press_review.pdf"
 with open(pdf_filename, "rb") as f:
     pdf_data = f.read()
 
