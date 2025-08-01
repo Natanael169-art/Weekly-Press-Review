@@ -2,25 +2,44 @@ import csv
 import feedparser
 from datetime import datetime, timedelta
 from jinja2 import Environment, FileSystemLoader
+import re
 import os
 
-# Configuration
+# Fichiers
 CSV_FILE = "client_rss_feeds_cleaned.csv"
-TEX_OUTPUT = "press_review.tex"
 TEMPLATE_DIR = "templates"
 TEMPLATE_FILE = "press_review_template.tex"
+OUTPUT_TEX = "press_review.tex"
 
-# Date limite : 7 jours en arrière
+# Fonction d’échappement LaTeX
+def escape_latex(text):
+    if not text:
+        return ""
+    replacements = {
+        '\\': r'\textbackslash{}',
+        '&': r'\&',
+        '%': r'\%',
+        '$': r'\$',
+        '#': r'\#',
+        '_': r'\_',
+        '{': r'\{',
+        '}': r'\}',
+        '~': r'\textasciitilde{}',
+        '^': r'\^{}',
+    }
+    regex = re.compile('|'.join(re.escape(key) for key in replacements.keys()))
+    return regex.sub(lambda match: replacements[match.group()], text)
+
+# Fenêtre temporelle
 now = datetime.utcnow()
 seven_days_ago = now - timedelta(days=7)
 
-# Collecte des articles par entreprise
-company_articles = []
-
+# Lecture des flux RSS
+companies = []
 with open(CSV_FILE, newline='', encoding='utf-8') as f:
     reader = csv.DictReader(f)
     for row in reader:
-        company = row.get("Company", "Unnamed Company")
+        company_name = row.get("Company", "Unnamed Company")
         rss_url = row.get("RSS Feed URL", "").strip()
 
         if not rss_url:
@@ -28,40 +47,36 @@ with open(CSV_FILE, newline='', encoding='utf-8') as f:
 
         feed = feedparser.parse(rss_url)
         if feed.bozo:
-            continue
-
-        recent_entries = []
+            continue = []
         for entry in feed.entries:
             pub_date = entry.get("published_parsed") or entry.get("updated_parsed")
             if pub_date:
                 pub_datetime = datetime(*pub_date[:6])
                 if pub_datetime >= seven_days_ago:
-                    recent_entries.append({
-                        "title": entry.get("title", "No title"),
-                        "summary": entry.get("summary", ""),
-                        "published": entry.get("published", "") or entry.get("updated", ""),
-                        "link": entry.get("link", "")
+                    recent_articles.append({
+                        "title": escape_latex(entry.get("title", "No title")),
+                        "summary": escape_latex(entry.get("summary", "")),
+                        "published": escape_latex(entry.get("published", "") or entry.get("updated", "")),
+                        "link": escape_latex(entry.get("link", ""))
                     })
 
-        if recent_entries:
-            company_articles.append({
-                "company": company,
-                "articles": recent_entries[:5]  # Limite à 5 articles
+        if recent_articles:
+            companies.append({
+                "company": escape_latex(company_name),
+                "articles": recent_articles[:5]
             })
 
-# Préparation de l'environnement Jinja2
+# Rendu LaTeX
 env = Environment(loader=FileSystemLoader(TEMPLATE_DIR))
 template = env.get_template(TEMPLATE_FILE)
 
-# Rendu du fichier LaTeX
 rendered_tex = template.render(
     generated_date=now.strftime("%Y-%m-%d"),
-    companies=company_articles
+    companies=companies
 )
 
 # Écriture du fichier .tex
-with open(TEX_OUTPUT, "w", encoding="utf-8") as f:
+with open(OUTPUT_TEX, "w", encoding="utf-8") as f:
     f.write(rendered_tex)
 
-print(f"✅ Fichier LaTeX généré : {TEX_OUTPUT}")
-
+print(f"✅ LaTeX file generated: {OUTPUT_TEX}")
