@@ -23,8 +23,11 @@ jobs:
           python -m pip install --upgrade pip
           pip install feedparser jinja2 beautifulsoup4
 
-      - name: Install Tectonic (LaTeX compiler)
-        run: sudo apt-get update && sudo apt-get install -y tectonic
+      - name: Install Snap and Tectonic
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y snapd
+          sudo snap install tectonic
 
       - name: Generate LaTeX file from RSS feeds
         run: python scripts/generate_tex_from_rss.py
