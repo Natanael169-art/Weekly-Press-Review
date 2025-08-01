@@ -3,6 +3,7 @@
 \usepackage[a4paper,margin=2.5cm]{geometry}
 \usepackage{lmodern}
 \usepackage{hyperref}
+\usepackage[hyphens]{url}
 \usepackage{xcolor}
 \usepackage{titlesec}
 \usepackage{fancyhdr}
@@ -39,7 +40,7 @@
 \subsection*{ {{ article.title }} }
 \textbf{Published:} {{ article.published }} \\
 \textbf{Summary:} {{ article.summary }} \\
-\textbf{Link:} \href{ {{ article.link }} }{ {{ article.link }} }
+\textbf{Link:} \url{ {{ article.link }} }
 
 \vspace{1em}
 {% endfor %}
