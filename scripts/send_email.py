@@ -22,6 +22,7 @@ email_data = {
         {
             "to": [
                 {"email": "natanael.farret@hertz.com"},
+                {"email": "estrange@hertz.com"}
             ],
             "subject": "Weekly Press Review"
         }
@@ -58,4 +59,3 @@ if response.status_code == 202:
 else:
     print(f"Failed to send email. Status code: {response.status_code}")
     print(response.text)
-
