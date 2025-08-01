@@ -29,8 +29,8 @@ def escape_latex(text):
         '~': r'\textasciitilde{}',
         '^': r'\^{}',
     }
-   join(re.escape(key) for key in replacements.keys()))
-    return regex.sub(lambda match: replacements[match.group()], text)
+    regex = re.compile('|'.join(re.escape(key) for key in replacements.keys()))
+    return: replacements[match.group()], text)
 
 # Nettoyage HTML
 def clean_html(text):
