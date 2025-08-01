@@ -19,6 +19,7 @@ def escape_latex(text):
     replacements = {
         '\\': r'\textbackslash{}',
         '&amp;': r'\&amp;',
+        '&': r'\&',
         '%': r'\%',
         '$': r'\$',
         '#': r'\#',
@@ -46,8 +47,7 @@ seven_days_ago = now - timedelta(days=7)
 companies = []
 with open(CSV_FILE, newline='', encoding='utf-8') as f:
     reader = csv.DictReader(f)
-    for row in reader:
-        company_name = row.get("Company", "Unnamed Company")
+    row.get("Company", "Unnamed Company")
         rss_url = row.get("RSS Feed URL", "").strip()
 
         if not rss_url:
@@ -64,7 +64,7 @@ with open(CSV_FILE, newline='', encoding='utf-8') as f:
                     title = escape_latex(entry.get("title", "No title"))
                     summary = escape_latex(clean_html(entry.get("summary", "")))
                     published = escape_latex(entry.get("published", "") or entry.get("updated", ""))
-                    link = entry.get("link", "")  # Pas d'échappement ici
+                    link = escape_latex(entry.get("link", ""))  # ✅ Échappement ajouté ici
 
                     recent_articles.append({
                         "title": title,
