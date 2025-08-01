@@ -1,0 +1,115 @@
+import csv
+import feedparser
+from datetime import datetime, timedelta
+from jinja2 import Environment, FileSystemLoader, select_autoescape
+import os
+
+# Configuration
+csv_file = "client_rss_feeds_cleaned.csv"
+tex_output = "press_review.tex"
+template_dir = "templates"
+template_file = "press_review_template.tex"
+
+# Create template directory if it doesn't exist
+os.makedirs(template_dir, exist_ok=True)
+
+# Save LaTeX template to file
+latex_template = r"""
+\documentclass[11pt]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[a4paper,margin=2.5cm]{geometry}
+\usepackage{lmodern}
+\usepackage{hyperref}
+\usepackage{xcolor}
+\usepackage{titlesec}
+\usepackage{fancyhdr}
+\usepackage{tocloft}
+\usepackage{enumitem}
+\usepackage{datetime}
+
+\pagestyle{fancy}
+\fancyhf{}
+\rhead{Weekly Press Review}
+\lhead{\today}
+\cfoot{\thepage}
+
+\titleformat{\section}{\Large\bfseries\sffamily\color{blue}}{}{0em}{}
+\titleformat{\subsection}{\bfseries\color{black}}{}{0em}{}
+
+\setlength{\parskip}{0.5em}
+\setlength{\parindent}{0pt}
+
+\begin{document}
+\tableofcontents
+\newpage
+
+{% for company, articles in data.items() %}
+\section*{{{{ company }}}}
+{% for article in articles %}
+\subsection*{{{{ article.title }}}}
+\textbf{Published:} {{{{ article.published }}}} \\
+\textbf{Summary:} {{{{ article.summary }}}} \\
+\textbf{Link:} \href{{{{ article.link }}}}{{{{ article.link }}}}
+
+\vspace{1em}
+{% endfor %}
+{% endfor %}
+
+\end{document}
+"""
+
+with open(os.path.join(template_dir, template_file), "w", encoding="utf-8") as f:
+    f.write(latex_template)
+
+# Prepare Jinja2 environment
+env = Environment(
+    loader=FileSystemLoader(template_dir),
+    autoescape=select_autoescape()
+)
+template = env.get_template(template_file)
+
+# Date limit: 7 days ago
+now = datetime.utcnow()
+seven_days_ago = now - timedelta(days=7)
+
+# Parse RSS feeds and collect articles
+press_data = {}
+
+with open(csv_file, newline='', encoding='utf-8') as f:
+    reader = csv.DictReader(f)
+    for row in reader:
+        company = row.get("Company", "Unnamed Company")
+        rss_url = row.get("RSS Feed URL", "").strip()
+
+        if not rss_url:
+            continue
+
+        feed = feedparser.parse(rss_url)
+
+        if feed.bozo:
+            continue
+
+        recent_entries = []
+        for entry in feed.entries:
+            pub_date = entry.get("published_parsed") or entry.get("updated_parsed")
+            if pub_date:
+                pub_datetime = datetime(*pub_date[:6])
+                if pub_datetime >= seven_days_ago:
+                    recent_entries.append({
+                        "title": entry.get("title", "No title"),
+                        "summary": entry.get("summary", "").replace("Read more", "").strip(),
+                        "published": entry.get("published", "") or entry.get("updated", ""),
+                        "link": entry.get("link", "")
+                    })
+
+        if recent_entries:
+            press_data[company] = recent_entries[:5]  # Limit to 5 articles per company
+
+# Render LaTeX file
+rendered_tex = template.render(data=press_data)
+
+with open(tex_output, "w", encoding="utf-8") as f:
+    f.write(rendered_tex)
+
+print(f"✅ LaTeX file generated: {tex_output}")
+
