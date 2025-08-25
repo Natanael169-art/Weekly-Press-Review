@@ -16,6 +16,9 @@ jobs:
       - name: Setup Tectonic
         uses: wtfjoke/setup-tectonic@v3
 
+      - name: List files for debug
+        run: ls -R
+
       - name: Compile LaTeX to PDF
         run: tectonic Weekly_Press_Review.tex
 
