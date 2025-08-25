@@ -17,17 +17,17 @@ jobs:
         uses: wtfjoke/setup-tectonic@v3
 
       - name: Debug - List files
-        run: ls -al
+        run: ls -alR
 
       - name: Check if LaTeX file exists
         run: |
-          if [ ! -f Weekly_Press_Review.tex ]; then
-            echo "Weekly_Press_Review.tex not found!"
+          if [ ! -f templates/press_review_template.tex ]; then
+            echo "press_review_template.tex not found in templates/"
             exit 1
           fi
 
       - name: Compile LaTeX to PDF
-        run: tectonic Weekly_Press_Review.tex
+        run: tectonic templates/press_review_template.tex
 
       - name: Send email with SendGrid
         uses: dawidd6/action-send-mail@v3
@@ -40,4 +40,4 @@ jobs:
           to: strange@hertz.com, natanael.farret@hertz.com
           from: "Press Review Bot <pressbot@hertz.com>"
           body: "Please find attached the weekly press review."
-          attachments: Weekly_Press_Review.pdf
+          attachments: templates/press_review_template.pdf
