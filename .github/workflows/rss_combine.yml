@@ -2,39 +2,35 @@ name: Weekly Press Review
 
 on:
   schedule:
-    - cron: '0 7 * * 1'  # Tous les lundis à 07:00 UTC (09:00 heure de Paris)
+    - cron: '0 7 * * 1'  # Tous les lundis à 7h UTC (9h à Montigny)
   workflow_dispatch:
 
 jobs:
-  build:
+  build-and-send:
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      - name: Set up Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: '3.10'
-
-      - name: Install Python dependencies
+      - name: Install Tectonic
         run: |
-          python -m pip install --upgrade pip
-          pip install feedparser jinja2 beautifulsoup4 requests
-
-      - name: Install Tectonic via apt
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y tectonic
-
-      - name: Generate LaTeX file from RSS feeds
-        run: python scripts/generate_tex_from_rss.py
+          curl --proto '=https' --tlsv1.2 -sSf https://tectonic.new/install.sh | sh
+          echo "$HOME/.cargo/bin" >> $GITHUB_PATH
 
       - name: Compile LaTeX to PDF
-        run: tectonic press_review.tex
+        run: |
+          ~/.cargo/bin/tectonic Weekly_Press_Review.tex
 
-      - name: Send PDF via SendGrid
-        env:
-          SENDGRID_API_KEY: ${{ secrets.SENDGRID_API_KEY }}
-        run: python scripts/send_email.py
+      - name: Send email with SendGrid
+        uses: dawidd6/action-send-mail@v3
+        with:
+          server_address: smtp.sendgrid.net
+          server_port: 587
+          username: apikey
+          password: ${{ secrets.SENDGRID_API_KEY }}
+          subject: "Weekly Press Review"
+          to: strange@hertz.com, natanael.farret@hertz.com
+          from: "Press Review Bot <pressbot@hertz.com>"
+          body: "Please find attached the weekly press review."
+          attachments: Weekly_Press_Review.pdf
