@@ -17,10 +17,11 @@ jobs:
         run: |
           curl --proto '=https' --tlsv1.2 -sSf https://tectonic.new/install.sh | sh
           echo "$HOME/.cargo/bin" >> $GITHUB_PATH
+          export PATH="$HOME/.cargo/bin:$PATH"
+          tectonic --version
 
       - name: Compile LaTeX to PDF
-        run: |
-          ~/.cargo/bin/tectonic Weekly_Press_Review.tex
+        run: tectonic Weekly_Press_Review.tex
 
       - name: Send email with SendGrid
         uses: dawidd6/action-send-mail@v3
