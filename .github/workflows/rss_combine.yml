@@ -11,14 +11,10 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
-      - name: Install Tectonic
-        run: |
-          curl --proto '=https' --tlsv1.2 -sSf https://tectonic.new/install.sh | sh
-          echo "$HOME/.cargo/bin" >> $GITHUB_PATH
-          export PATH="$HOME/.cargo/bin:$PATH"
-          tectonic --version
+      - name: Setup Tectonic
+        uses: wtfjoke/setup-tectonic@v3
 
       - name: Compile LaTeX to PDF
         run: tectonic Weekly_Press_Review.tex
