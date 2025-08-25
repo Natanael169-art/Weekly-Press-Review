@@ -16,8 +16,15 @@ jobs:
       - name: Setup Tectonic
         uses: wtfjoke/setup-tectonic@v3
 
-      - name: List files for debug
-        run: ls -R
+      - name: Debug - List files
+        run: ls -al
+
+      - name: Check if LaTeX file exists
+        run: |
+          if [ ! -f Weekly_Press_Review.tex ]; then
+            echo "Weekly_Press_Review.tex not found!"
+            exit 1
+          fi
 
       - name: Compile LaTeX to PDF
         run: tectonic Weekly_Press_Review.tex
