@@ -1,4 +1,3 @@
-corrected_tex_template = """
 \documentclass[11pt]{article}
 \usepackage[utf8]{inputenc}
 \usepackage[a4paper,margin=2.5cm]{geometry}
@@ -35,9 +34,9 @@ corrected_tex_template = """
 \newpage
 
 {% for company in companies %}
-\section{ {{ company.company }} }
+\section*{ {{ company.company }} }
 {% for article in company.articles %}
-\subsection{ {{ article.title }} }
+\subsection*{ {{ article.title }} }
 \textbf{Published:} {{ article.published }} \\
 \textbf{Summary:} {{ article.summary }} \\
 \textbf{Link:} \url{ {{ article.link }} }
@@ -47,9 +46,3 @@ corrected_tex_template = """
 {% endfor %}
 
 \end{document}
-"""
-
-with open("press_review_template.tex", mode="w", encoding="utf-8") as f:
-    f.write(corrected_tex_template)
-
-print("Fichier LaTeX corrigé généré : press_review_template.tex")
