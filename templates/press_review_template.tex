@@ -1,4 +1,3 @@
-corrected_tex_content = r"""
 \documentclass[11pt]{article}
 \usepackage[utf8]{inputenc}
 \usepackage[a4paper,margin=2.5cm]{geometry}
@@ -27,37 +26,25 @@ corrected_tex_content = r"""
 \begin{center}
     {\LARGE \textbf{Weekly Press Review}}\\
     \vspace{0.5em}
-    \textit{Generated on 2025-08-25}
+    \textit{Generated on {{ generated_date }}}
 \end{center}
 
 \vspace{1em}
 \tableofcontents
 \newpage
 
-\section{ExampleCorp}
-\subsection{New AI Breakthrough}
-\textbf{Published:} 2025-08-20 \\
-\textbf{Summary:} ExampleCorp has announced a major breakthrough in AI technology.\\
-\textbf{Link:} \url{https://example.com/article1}
+{% for company in companies %}
+\section*{ {{ company.company }} }
+\section{ {{ company.company }} }
+{% for article in company.articles %}
+\subsection*{ {{ article.title }} }
+\subsection{ {{ article.title }} }
+\textbf{Published:} {{ article.published }} \\
+\textbf{Summary:} {{ article.summary }} \\
+\textbf{Link:} \url{ {{ article.link }} }
 
 \vspace{1em}
-
-\subsection{Quarterly Earnings Report}
-\textbf{Published:} 2025-08-22 \\
-\textbf{Summary:} The company reported a 20% increase in revenue.\\
-\textbf{Link:} \url{https://example.com/article2}
-
-\section{TechNova}
-\subsection{Launch of New Product Line}
-\textbf{Published:} 2025-08-21 \\
-\textbf{Summary:} TechNova has launched a new line of smart devices.\\
-\textbf{Link:} \url{https://example.com/article3}
+{% endfor %}
+{% endfor %}
 
 \end{document}
-"""
-
-# Write the corrected LaTeX content to a file
-with open("press_review_final.tex", "w", encoding="utf-8") as f:
-    f.write(corrected_tex_content)
-
-print("Fichier LaTeX corrigé généré : press_review_final.tex")
