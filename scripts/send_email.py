@@ -16,13 +16,17 @@ with open(pdf_filename, "rb") as f:
 # Encodage en base64
 encoded_pdf = base64.b64encode(pdf_data).decode()
 
-# Corps de l'email avec deux destinataires
+# Corps de l'email avec plusieurs destinataires
 email_data = {
     "personalizations": [
         {
             "to": [
                 {"email": "natanael.farret@hertz.com"},
-                {"email": "estrange@hertz.com"}
+                {"email": "estrange@hertz.com"},
+                {"email": "sbarthelemy@hertz.com"},
+                {"email": "alana.mccubbin@hertz.com"},
+                {"email": "mthill@hertz.com"},
+                {"email": "andrew.wilson1@hertz.com"}
             ],
             "subject": "Weekly Press Review"
         }
