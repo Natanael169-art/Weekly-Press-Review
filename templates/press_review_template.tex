@@ -34,9 +34,9 @@
 \newpage
 
 {% for company in companies %}
-\section*{ {{ company.company }} }
+\section{ {{ company.company }} }
 {% for article in company.articles %}
-\subsection*{ {{ article.title }} }
+\subsection{ {{ article.title }} }
 \textbf{Published:} {{ article.published }} \\
 \textbf{Summary:} {{ article.summary }} \\
 \textbf{Link:} \url{ {{ article.link }} }
