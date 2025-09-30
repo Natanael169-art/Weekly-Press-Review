@@ -26,7 +26,8 @@ email_data = {
                 {"email": "sbarthelemy@hertz.com"},
                 {"email": "alana.mccubbin@hertz.com"},
                 {"email": "mthill@hertz.com"},
-                {"email": "andrew.wilson1@hertz.com"}
+                {"email": "andrew.wilson1@hertz.com"},
+                {"email": "gmarx@hertz.com"}
             ],
             "subject": "Weekly Press Review"
         }
@@ -59,7 +60,7 @@ response = requests.post(
 )
 
 if response.status_code == 202:
-    print("Email sent successfully.")
+    print("✅ Email sent successfully.")
 else:
-    print(f"Failed to send email. Status code: {response.status_code}")
+    print(f"❌ Failed to send email. Status code: {response.status_code}")
     print(response.text)
